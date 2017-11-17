@@ -1,3 +1,5 @@
+//we based our part 2 of the assignment using the solution for part 1 posted on
+//eclass, just to be on the safe side
 #include <Arduino.h>
 #include <Adafruit_ILI9341.h>
 #include <SPI.h>
@@ -5,6 +7,8 @@
 #include "lcd_image.h"
 #include "yegmap.h"
 #include "restaurant.h"
+
+#include <TouchScreen.h>
 
 // TFT display and SD card will share the hardware SPI interface.
 // For the Adafruit shield, these are the default.
@@ -28,6 +32,16 @@
 #define DISP_WIDTH (TFT_WIDTH - RATING_SIZE)
 #define DISP_HEIGHT TFT_HEIGHT
 
+//NOTE new code here
+#define RATEBUTTONRADIUS 20
+#define RATEBUTTONX TFT_WIDTH- RATING_SIZE/2
+#define RATEBUTTON5Y RATEBUTTONRADIUS+6
+#define RATEBUTTON4Y RATEBUTTON5Y+46
+#define RATEBUTTON3Y RATEBUTTON4Y+46
+#define RATEBUTTON2Y RATEBUTTON3Y+46
+#define RATEBUTTON1Y RATEBUTTON2Y+46
+
+
 // constants for the joystick
 #define JOY_DEADZONE 64
 #define JOY_CENTRE 512
@@ -41,6 +55,7 @@
 
 // Use hardware SPI (on Mega2560, #52, #51, and #50) and the above for CS/DC
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
+
 
 // the currently selected restaurant, if we are in mode 1
 int selectedRest;
@@ -320,14 +335,46 @@ void scrollingMenu() {
 	}
 }
 
+void drawRating(){
+
+	tft.fillCircle(RATEBUTTONX,RATEBUTTON5Y,RATEBUTTONRADIUS,ILI9341_WHITE);
+	tft.setCursor(RATEBUTTONX-10,RATEBUTTON5Y-15);
+	tft.setTextColor(0);
+	tft.setTextSize(4);
+	tft.print(5);
+
+	tft.fillCircle(RATEBUTTONX,RATEBUTTON4Y,RATEBUTTONRADIUS,ILI9341_WHITE);
+	tft.setCursor(RATEBUTTONX-10,RATEBUTTON4Y-15);
+	tft.print(4);
+
+	tft.fillCircle(RATEBUTTONX,RATEBUTTON3Y,RATEBUTTONRADIUS,ILI9341_WHITE);
+	tft.setCursor(RATEBUTTONX-10,RATEBUTTON3Y-15);
+	tft.print(3);
+
+	tft.fillCircle(RATEBUTTONX,RATEBUTTON2Y,RATEBUTTONRADIUS,ILI9341_WHITE);
+	tft.setCursor(RATEBUTTONX-10,RATEBUTTON2Y-15);
+	tft.print(2);
+
+	tft.fillCircle(RATEBUTTONX,RATEBUTTON1Y,RATEBUTTONRADIUS,ILI9341_WHITE);
+	tft.setCursor(RATEBUTTONX-10,RATEBUTTON1Y-15);
+	tft.print(1);
+
+}
+
+void selectRating(){
+
+}
+
 int main() {
 	setup();
+	drawRating();
 
 	// All the implementation work is done now, just have a loop that processes
 	// joystick movement!
 	while (true) {
 		if (mode == 0) {
 			scrollingMap();
+			selectRating();
 		}
 		else {
 			scrollingMenu();

@@ -107,6 +107,7 @@ RestCache cache;
 // it seems natural to forward declare both (not really that important).
 void beginMode0();
 void beginMode1();
+void drawRating(int currentRating);
 
 void setup() {
 	init();
@@ -188,6 +189,7 @@ void printRestaurant(int i) {
 
 	// get the i'th restaurant
 	getRestaurant(&r, restaurants[i].index, &card, &cache);
+	tft.setTextSize(1);
 
 	// Set its colour based on whether or not it is the selected restaurant.
 	if (i != selectedRest) {
@@ -314,7 +316,7 @@ void scrollingMap() {
 }
 
 // Process joystick movement when in mode 1.
-void scrollingMenu() {
+void scrollingMenu(int currentRating) {
 	int oldRest = selectedRest;
 
 	int v = analogRead(JOY_VERT_ANALOG);
@@ -357,33 +359,127 @@ void scrollingMenu() {
 
 		// Ensures a long click of the joystick will not register twice.
 		while (digitalRead(JOY_SEL) == LOW) { delay(10); }
+
+		drawRating(currentRating);
+
 	}
 }
 
-void drawRating(){
-
-	tft.fillCircle(RATEBUTTONX,RATEBUTTON5Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
-	tft.setCursor(RATEBUTTONX-10,RATEBUTTON5Y-15);
+void drawRating(int currentRating){
 	tft.setTextColor(0);
 	tft.setTextSize(4);
-	tft.print(5);
+	switch (currentRating){
 
-	tft.fillCircle(RATEBUTTONX,RATEBUTTON4Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
-	tft.setCursor(RATEBUTTONX-10,RATEBUTTON4Y-15);
-	tft.print(4);
+		case 5:
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON5Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON5Y-15);
+		tft.print(5);
 
-	tft.fillCircle(RATEBUTTONX,RATEBUTTON3Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
-	tft.setCursor(RATEBUTTONX-10,RATEBUTTON3Y-15);
-	tft.print(3);
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON4Y,RATEBUTTONRADIUS,ILI9341_WHITE);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON4Y-15);
+		tft.print(4);
 
-	tft.fillCircle(RATEBUTTONX,RATEBUTTON2Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
-	tft.setCursor(RATEBUTTONX-10,RATEBUTTON2Y-15);
-	tft.print(2);
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON3Y,RATEBUTTONRADIUS,ILI9341_WHITE);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON3Y-15);
+		tft.print(3);
 
-	tft.fillCircle(RATEBUTTONX,RATEBUTTON1Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
-	tft.setCursor(RATEBUTTONX-10,RATEBUTTON1Y-15);
-	tft.print(1);
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON2Y,RATEBUTTONRADIUS,ILI9341_WHITE);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON2Y-15);
+		tft.print(2);
 
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON1Y,RATEBUTTONRADIUS,ILI9341_WHITE);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON1Y-15);
+		tft.print(1);
+		break;
+
+		case 4:
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON5Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON5Y-15);
+		tft.print(5);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON4Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON4Y-15);
+		tft.print(4);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON3Y,RATEBUTTONRADIUS,ILI9341_WHITE);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON3Y-15);
+		tft.print(3);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON2Y,RATEBUTTONRADIUS,ILI9341_WHITE);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON2Y-15);
+		tft.print(2);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON1Y,RATEBUTTONRADIUS,ILI9341_WHITE);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON1Y-15);
+		tft.print(1);
+		break;
+
+		case 3:
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON5Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON5Y-15);
+		tft.print(5);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON4Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON4Y-15);
+		tft.print(4);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON3Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON3Y-15);
+		tft.print(3);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON2Y,RATEBUTTONRADIUS,ILI9341_WHITE);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON2Y-15);
+		tft.print(2);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON1Y,RATEBUTTONRADIUS,ILI9341_WHITE);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON1Y-15);
+		tft.print(1);
+		break;
+
+		case 2:
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON5Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON5Y-15);
+		tft.print(5);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON4Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON4Y-15);
+		tft.print(4);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON3Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON3Y-15);
+		tft.print(3);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON2Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON2Y-15);
+		tft.print(2);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON1Y,RATEBUTTONRADIUS,ILI9341_WHITE);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON1Y-15);
+		tft.print(1);
+		break;
+
+		case 1:
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON5Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON5Y-15);
+		tft.print(5);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON4Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON4Y-15);
+		tft.print(4);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON3Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON3Y-15);
+		tft.print(3);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON2Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON2Y-15);
+		tft.print(2);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON1Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON1Y-15);
+		tft.print(1);
+		break;
+	}
 }
 
 int selectRating(int currentSelection){
@@ -407,120 +503,25 @@ int selectRating(int currentSelection){
 	//if user tapped somewhere in the right column
 	if (touchX>DISP_WIDTH){
 
-		if(touchY>0 && touchY<48){
+			if(touchY>0 && touchY<48){
 			//first button (5star only)
 			currentSelection=5;
-			tft.fillCircle(RATEBUTTONX,RATEBUTTON5Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
-			tft.setCursor(RATEBUTTONX-10,RATEBUTTON5Y-15);
-			tft.print(5);
-
-			tft.fillCircle(RATEBUTTONX,RATEBUTTON4Y,RATEBUTTONRADIUS,ILI9341_WHITE);
-			tft.setCursor(RATEBUTTONX-10,RATEBUTTON4Y-15);
-			tft.print(4);
-
-			tft.fillCircle(RATEBUTTONX,RATEBUTTON3Y,RATEBUTTONRADIUS,ILI9341_WHITE);
-			tft.setCursor(RATEBUTTONX-10,RATEBUTTON3Y-15);
-			tft.print(3);
-
-			tft.fillCircle(RATEBUTTONX,RATEBUTTON2Y,RATEBUTTONRADIUS,ILI9341_WHITE);
-			tft.setCursor(RATEBUTTONX-10,RATEBUTTON2Y-15);
-			tft.print(2);
-
-			tft.fillCircle(RATEBUTTONX,RATEBUTTON1Y,RATEBUTTONRADIUS,ILI9341_WHITE);
-			tft.setCursor(RATEBUTTONX-10,RATEBUTTON1Y-15);
-			tft.print(1);
 		}
 		else if(touchY>48 && touchY<48*2){
 			//2nd button (4* and 5*)
 			currentSelection=4;
-			tft.fillCircle(RATEBUTTONX,RATEBUTTON5Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
-			tft.setCursor(RATEBUTTONX-10,RATEBUTTON5Y-15);
-			tft.print(5);
-
-			tft.fillCircle(RATEBUTTONX,RATEBUTTON4Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
-			tft.setCursor(RATEBUTTONX-10,RATEBUTTON4Y-15);
-			tft.print(4);
-
-			tft.fillCircle(RATEBUTTONX,RATEBUTTON3Y,RATEBUTTONRADIUS,ILI9341_WHITE);
-			tft.setCursor(RATEBUTTONX-10,RATEBUTTON3Y-15);
-			tft.print(3);
-
-			tft.fillCircle(RATEBUTTONX,RATEBUTTON2Y,RATEBUTTONRADIUS,ILI9341_WHITE);
-			tft.setCursor(RATEBUTTONX-10,RATEBUTTON2Y-15);
-			tft.print(2);
-
-			tft.fillCircle(RATEBUTTONX,RATEBUTTON1Y,RATEBUTTONRADIUS,ILI9341_WHITE);
-			tft.setCursor(RATEBUTTONX-10,RATEBUTTON1Y-15);
-			tft.print(1);
 		}
 		else if(touchY>48*2 && touchY<48*3){
 			//3rd button (3* 4* and 5*)
 			currentSelection=3;
-			tft.fillCircle(RATEBUTTONX,RATEBUTTON5Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
-			tft.setCursor(RATEBUTTONX-10,RATEBUTTON5Y-15);
-			tft.print(5);
-
-			tft.fillCircle(RATEBUTTONX,RATEBUTTON4Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
-			tft.setCursor(RATEBUTTONX-10,RATEBUTTON4Y-15);
-			tft.print(4);
-
-			tft.fillCircle(RATEBUTTONX,RATEBUTTON3Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
-			tft.setCursor(RATEBUTTONX-10,RATEBUTTON3Y-15);
-			tft.print(3);
-
-			tft.fillCircle(RATEBUTTONX,RATEBUTTON2Y,RATEBUTTONRADIUS,ILI9341_WHITE);
-			tft.setCursor(RATEBUTTONX-10,RATEBUTTON2Y-15);
-			tft.print(2);
-
-			tft.fillCircle(RATEBUTTONX,RATEBUTTON1Y,RATEBUTTONRADIUS,ILI9341_WHITE);
-			tft.setCursor(RATEBUTTONX-10,RATEBUTTON1Y-15);
-			tft.print(1);
 		}
 		else if(touchY>48*3 && touchY<48*4){
 			//2nd button (2* 3* 4* and 5*)
 			currentSelection=2;
-			tft.fillCircle(RATEBUTTONX,RATEBUTTON5Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
-			tft.setCursor(RATEBUTTONX-10,RATEBUTTON5Y-15);
-			tft.print(5);
-
-			tft.fillCircle(RATEBUTTONX,RATEBUTTON4Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
-			tft.setCursor(RATEBUTTONX-10,RATEBUTTON4Y-15);
-			tft.print(4);
-
-			tft.fillCircle(RATEBUTTONX,RATEBUTTON3Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
-			tft.setCursor(RATEBUTTONX-10,RATEBUTTON3Y-15);
-			tft.print(3);
-
-			tft.fillCircle(RATEBUTTONX,RATEBUTTON2Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
-			tft.setCursor(RATEBUTTONX-10,RATEBUTTON2Y-15);
-			tft.print(2);
-
-			tft.fillCircle(RATEBUTTONX,RATEBUTTON1Y,RATEBUTTONRADIUS,ILI9341_WHITE);
-			tft.setCursor(RATEBUTTONX-10,RATEBUTTON1Y-15);
-			tft.print(1);
 		}
 		else if(touchY>48*4 && touchY<48*5){
 			//2nd button (1* 2* 3* 4* and 5*)
 			currentSelection=1;
-			tft.fillCircle(RATEBUTTONX,RATEBUTTON5Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
-			tft.setCursor(RATEBUTTONX-10,RATEBUTTON5Y-15);
-			tft.print(5);
-
-			tft.fillCircle(RATEBUTTONX,RATEBUTTON4Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
-			tft.setCursor(RATEBUTTONX-10,RATEBUTTON4Y-15);
-			tft.print(4);
-
-			tft.fillCircle(RATEBUTTONX,RATEBUTTON3Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
-			tft.setCursor(RATEBUTTONX-10,RATEBUTTON3Y-15);
-			tft.print(3);
-
-			tft.fillCircle(RATEBUTTONX,RATEBUTTON2Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
-			tft.setCursor(RATEBUTTONX-10,RATEBUTTON2Y-15);
-			tft.print(2);
-
-			tft.fillCircle(RATEBUTTONX,RATEBUTTON1Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
-			tft.setCursor(RATEBUTTONX-10,RATEBUTTON1Y-15);
-			tft.print(1);
 		}
 
 		}
@@ -529,37 +530,26 @@ int selectRating(int currentSelection){
 		return currentSelection;
 	}
 
+//update display of which rating is selected
+	drawRating(currentSelection);
+}
 
 
 
-	}
-
-
-		// if (touchX > DISP_WIDTH && touchY>0 && touchY<48 ){
-		// 	tft.setCursor(RATEBUTTONX-10,RATEBUTTON5Y-15);
-		// 	tft.fillCircle(RATEBUTTONX,RATEBUTTON5Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
-		// 	tft.print(5);
-		// }
-		// else{
-		// 	tft.fillCircle(RATEBUTTONX,RATEBUTTON5Y,RATEBUTTONRADIUS,ILI9341_WHITE);
-		// 	tft.setCursor(RATEBUTTONX-10,RATEBUTTON5Y-15);
-		// 	tft.print(5);
-		// }
 
 
 int main() {
 	setup();
-	drawRating();
 	int currentRating=1;
-	// All the implementation work is done now, just have a loop that processes
-	// joystick movement!
+	drawRating(currentRating);
+
 	while (true) {
 		if (mode == 0) {
 			scrollingMap();
 			currentRating=selectRating(currentRating);
 		}
 		else {
-			scrollingMenu();
+			scrollingMenu(currentRating);
 		}
 	}
 

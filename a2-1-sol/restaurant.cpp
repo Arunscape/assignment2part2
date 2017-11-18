@@ -24,11 +24,11 @@ void swap(RestDist& r1, RestDist& r2) {
 	r2 = tmp;
 }
 
-/* Given an array of length n > 0 and an index 0 <= pi < n, this rearranges
-   the array so all items <= a[pi] appear before a[pi] and all items > a[pi]
-	 appear after a[pi].
+/* Given a restDist struct of length n > 0 and an index 0 <= pi < n, this rearranges
+   the struct so all items <= restaurants.dist[pi] appear before restaurants[pi] and all items
+	 > restaurants.dist[pi] appear after restaurants[pi].
 
-  Returns the index of a[pi] after the rearrangement.
+  Returns the index of restaurants[pi] after the rearrangement.
 */
 int pivot(RestDist restaurants[], int n, int pi) {
 	int lo = 0;
@@ -52,7 +52,7 @@ int pivot(RestDist restaurants[], int n, int pi) {
 	return lo;
 }
 
-// Sort an array with n elements using Quick Sort
+// Sort the restaurants struct with n restaurants using Quick Sort (sort by distance)
 void qsort(RestDist restaurants[], int n) {
 	// if n <= 1 do nothing (just return)
 	if (n <= 1) {

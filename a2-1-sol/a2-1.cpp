@@ -275,7 +275,7 @@ void scrollingMap() {
   }
 }
 
-//displays 30 rest names starting from topRest
+//displays 30 restaurant names starting from topRest
 void displayAllNames(int topRest) {
 	tft.fillScreen(ILI9341_BLACK);
   tft.setCursor(0, 0); // where the characters will be displayed
@@ -290,8 +290,9 @@ void displayAllNames(int topRest) {
   tft.print("\n");
 }
 
+
+// display another screen of restaurants when the edge is bumped
 void checkMenuScroll() {
-	//int numRests = sizeof(restaurants)/sizeof(keys[0]).
 	//scroll down
 	if (selectedRest == REST_DISP_NUM) {
 		selectedRest=0;
@@ -309,7 +310,7 @@ void checkMenuScroll() {
 		selectedRest = 0;
 	}
 	//very bottom of list
-	//else if (select)
+	
 }
 
 // Process joystick movement when in mode 1.
@@ -326,10 +327,7 @@ void scrollingMenu() {
 		--selectedRest;
 	}
 
-	selectedRest = constrain(selectedRest, -1, REST_DISP_NUM); //up to max
-
-	// If we picked a new restaurant, update the way it and the previously
-	// selected restaurant are displayed.
+	selectedRest = constrain(selectedRest, -1, REST_DISP_NUM);
 
 	checkMenuScroll();
 

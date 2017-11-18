@@ -46,15 +46,34 @@ int16_t manhattan(int16_t x1, int16_t y1, int16_t x2, int16_t y2) {
 	in restaurants[], and then sorts them based on their distance to the
 	point on the map represented by the MapView.
 */
-void getAndSortRestaurants(const MapView& mv, RestDist restaurants[], Sd2Card* card, RestCache* cache) {
+void getAndSortRestaurants(const MapView& mv, RestDist restaurants[], Sd2Card* card, RestCache* cache,int currentRating) {
 	restaurant r;
+	//Serial.println(currentRating);
 
 	// first get all the restaurants and store their corresponding RestDist information.
+	//and only choose restaurants with appropriate rating
+	int counter=0;
+	Serial.print("Current Rating: ");
+	Serial.println(currentRating);
+
 	for (int i = 0; i < NUM_RESTAURANTS; ++i) {
+
 		getRestaurant(&r, i, card, cache);
-		restaurants[i].index = i;
-		restaurants[i].dist = manhattan(lat_to_y(r.lat), lon_to_x(r.lon),
-																		mv.mapY + mv.cursorY, mv.mapX + mv.cursorX);
+
+
+
+		// Serial.print("restaurant rating: ");
+		// Serial.print(r.rating);
+		// Serial.print(" ");
+		// Serial.println((int)max(floor((r.rating+1)/2), 1));
+
+		if(currentRating<= max((int)floor((r.rating+1)/2), 1)){
+			// Serial.println("true");
+			restaurants[counter].index = i;
+			restaurants[counter].dist = manhattan(lat_to_y(r.lat), lon_to_x(r.lon),
+																			mv.mapY + mv.cursorY, mv.mapX + mv.cursorX);
+			counter++;
+		}
 	}
 
 	// Now sort them.

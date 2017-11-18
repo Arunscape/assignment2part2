@@ -44,6 +44,6 @@ void getRestaurant(restaurant* ptr, int i, Sd2Card* card, RestCache* cache);
 // Will actually just sort the restDist array.
 // Assumes *card has been initialized for raw reads.
 void getAndSortRestaurants(const MapView& mv, RestDist restaurants[],
-                           Sd2Card* card, RestCache* cache);
+                           Sd2Card* card, RestCache* cache,int currentRating);
 
 #endif

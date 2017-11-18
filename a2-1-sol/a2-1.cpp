@@ -204,12 +204,12 @@ void printRestaurant(int i) {
 
 // Begin mode 1 by sorting the restaurants around the cursor
 // and then displaying the list.
-void beginMode1() {
+void beginMode1(int currentRating) {
 	tft.setCursor(0, 0);
 	tft.fillScreen(ILI9341_BLACK);
 
 	// Get the RestDist information for this cursor position and sort it.
-	getAndSortRestaurants(curView, restaurants, &card, &cache);
+	getAndSortRestaurants(curView, restaurants, &card, &cache,currentRating);
 
 	// Initially have the closest restaurant highlighted.
 	selectedRest = 0;
@@ -262,7 +262,7 @@ void checkRedrawMap() {
 }
 
 // Process joystick input when in mode 0.
-void scrollingMap() {
+void scrollingMap(int currentRating) {
   int v = analogRead(JOY_VERT_ANALOG);
   int h = analogRead(JOY_HORIZ_ANALOG);
   int invSelect = digitalRead(JOY_SEL);
@@ -304,7 +304,7 @@ void scrollingMap() {
 
 	// Did we click the button?
   if(invSelect == LOW){
-		beginMode1();
+		beginMode1(currentRating);
     mode = 1;
     Serial.println(mode);
     Serial.println("MODE changed.");
@@ -527,11 +527,12 @@ int selectRating(int currentSelection){
 		}
 	else{
 		//didn't touch within the column of interest, so do nothing
-		return currentSelection;
+		;
 	}
 
 //update display of which rating is selected
 	drawRating(currentSelection);
+	return currentSelection;
 }
 
 
@@ -545,8 +546,9 @@ int main() {
 
 	while (true) {
 		if (mode == 0) {
-			scrollingMap();
 			currentRating=selectRating(currentRating);
+			//Serial.println(currentRating);
+			scrollingMap(currentRating);
 		}
 		else {
 			scrollingMenu(currentRating);

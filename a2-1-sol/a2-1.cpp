@@ -1,3 +1,5 @@
+//we based our part 2 of the assignment using the solution for part 1 posted on
+//eclass, just to be on the safe side
 #include <Arduino.h>
 #include <Adafruit_ILI9341.h>
 #include <SPI.h>
@@ -5,6 +7,8 @@
 #include "lcd_image.h"
 #include "yegmap.h"
 #include "restaurant.h"
+
+#include <TouchScreen.h>
 
 // TFT display and SD card will share the hardware SPI interface.
 // For the Adafruit shield, these are the default.
@@ -28,6 +32,41 @@
 #define DISP_WIDTH (TFT_WIDTH - RATING_SIZE)
 #define DISP_HEIGHT TFT_HEIGHT
 
+//NOTE new code here
+#define RATEBUTTONRADIUS 20
+#define RATEBUTTONX TFT_WIDTH- RATING_SIZE/2
+#define RATEBUTTON5Y RATEBUTTONRADIUS+6
+#define RATEBUTTON4Y RATEBUTTON5Y+46
+#define RATEBUTTON3Y RATEBUTTON4Y+46
+#define RATEBUTTON2Y RATEBUTTON3Y+46
+#define RATEBUTTON1Y RATEBUTTON2Y+46
+
+
+//stuff required for touch functionality
+
+// touch screen pins, obtained from the documentaion
+#define YP A2  // must be an analog pin, use "An" notation!
+#define XM A3  // must be an analog pin, use "An" notation!
+#define YM  5  // can be a digital pin
+#define XP  4  // can be a digital pin
+
+// calibration data for the touch screen, obtained from documentation
+// the minimum/maximum possible readings from the touch point
+#define TS_MINX 150
+#define TS_MINY 120
+#define TS_MAXX 920
+#define TS_MAXY 940
+
+// thresholds to determine if there was a touch
+#define MINPRESSURE   10
+#define MAXPRESSURE 1000
+
+// a multimeter reading says there are 300 ohms of resistance across the plate,
+// so initialize with this to get more accurate readings
+TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
+
+
+
 // constants for the joystick
 #define JOY_DEADZONE 64
 #define JOY_CENTRE 512
@@ -41,6 +80,7 @@
 
 // Use hardware SPI (on Mega2560, #52, #51, and #50) and the above for CS/DC
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
+
 
 // the currently selected restaurant, if we are in mode 1
 int selectedRest;
@@ -68,6 +108,7 @@ RestCache cache;
 // it seems natural to forward declare both (not really that important).
 void beginMode0();
 void beginMode1();
+void drawRating(int currentRating);
 
 void setup() {
 	init();
@@ -148,7 +189,11 @@ void printRestaurant(int i) {
 	restaurant r;
 
 	// get the i'th restaurant
+
+	//getRestaurant(&r, restaurants[i].index, &card, &cache);
+	tft.setTextSize(1);
 	getRestaurant(&r, restaurants[i+topRest].index, &card, &cache);
+
 
 	// Set its colour based on whether or not it is the selected restaurant.
 	if (i != selectedRest) {
@@ -163,12 +208,12 @@ void printRestaurant(int i) {
 
 // Begin mode 1 by sorting the restaurants around the cursor
 // and then displaying the list.
-void beginMode1() {
+void beginMode1(int currentRating) {
 	tft.setCursor(0, 0);
 	tft.fillScreen(ILI9341_BLACK);
 
 	// Get the RestDist information for this cursor position and sort it.
-	getAndSortRestaurants(curView, restaurants, &card, &cache);
+	getAndSortRestaurants(curView, restaurants, &card, &cache,currentRating);
 
 	// Initially have the closest restaurant highlighted.
 	selectedRest = 0;
@@ -222,7 +267,7 @@ void checkRedrawMap() {
 }
 
 // Process joystick input when in mode 0.
-void scrollingMap() {
+void scrollingMap(int currentRating) {
   int v = analogRead(JOY_VERT_ANALOG);
   int h = analogRead(JOY_HORIZ_ANALOG);
   int invSelect = digitalRead(JOY_SEL);
@@ -264,7 +309,7 @@ void scrollingMap() {
 
 	// Did we click the button?
   if(invSelect == LOW){
-		beginMode1();
+		beginMode1(currentRating);
     mode = 1;
     Serial.println(mode);
     Serial.println("MODE changed.");
@@ -314,7 +359,7 @@ void checkMenuScroll() {
 }
 
 // Process joystick movement when in mode 1.
-void scrollingMenu() {
+void scrollingMenu(int currentRating) {
 	int oldRest = selectedRest;
 
 	int v = analogRead(JOY_VERT_ANALOG);
@@ -359,20 +404,199 @@ void scrollingMenu() {
 
 		// Ensures a long click of the joystick will not register twice.
 		while (digitalRead(JOY_SEL) == LOW) { delay(10); }
+
+		drawRating(currentRating);
+
 	}
 }
 
+void drawRating(int currentRating){
+	tft.setTextColor(0);
+	tft.setTextSize(4);
+	switch (currentRating){
+
+		case 5:
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON5Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON5Y-15);
+		tft.print(5);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON4Y,RATEBUTTONRADIUS,ILI9341_WHITE);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON4Y-15);
+		tft.print(4);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON3Y,RATEBUTTONRADIUS,ILI9341_WHITE);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON3Y-15);
+		tft.print(3);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON2Y,RATEBUTTONRADIUS,ILI9341_WHITE);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON2Y-15);
+		tft.print(2);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON1Y,RATEBUTTONRADIUS,ILI9341_WHITE);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON1Y-15);
+		tft.print(1);
+		break;
+
+		case 4:
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON5Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON5Y-15);
+		tft.print(5);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON4Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON4Y-15);
+		tft.print(4);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON3Y,RATEBUTTONRADIUS,ILI9341_WHITE);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON3Y-15);
+		tft.print(3);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON2Y,RATEBUTTONRADIUS,ILI9341_WHITE);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON2Y-15);
+		tft.print(2);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON1Y,RATEBUTTONRADIUS,ILI9341_WHITE);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON1Y-15);
+		tft.print(1);
+		break;
+
+		case 3:
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON5Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON5Y-15);
+		tft.print(5);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON4Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON4Y-15);
+		tft.print(4);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON3Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON3Y-15);
+		tft.print(3);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON2Y,RATEBUTTONRADIUS,ILI9341_WHITE);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON2Y-15);
+		tft.print(2);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON1Y,RATEBUTTONRADIUS,ILI9341_WHITE);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON1Y-15);
+		tft.print(1);
+		break;
+
+		case 2:
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON5Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON5Y-15);
+		tft.print(5);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON4Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON4Y-15);
+		tft.print(4);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON3Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON3Y-15);
+		tft.print(3);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON2Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON2Y-15);
+		tft.print(2);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON1Y,RATEBUTTONRADIUS,ILI9341_WHITE);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON1Y-15);
+		tft.print(1);
+		break;
+
+		case 1:
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON5Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON5Y-15);
+		tft.print(5);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON4Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON4Y-15);
+		tft.print(4);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON3Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON3Y-15);
+		tft.print(3);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON2Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON2Y-15);
+		tft.print(2);
+
+		tft.fillCircle(RATEBUTTONX,RATEBUTTON1Y,RATEBUTTONRADIUS,ILI9341_YELLOW);
+		tft.setCursor(RATEBUTTONX-10,RATEBUTTON1Y-15);
+		tft.print(1);
+		break;
+	}
+}
+
+int selectRating(int currentSelection){
+	//check for touch
+	TSPoint touch = ts.getPoint();
+
+	if (touch.z < MINPRESSURE || touch.z > MAXPRESSURE) {
+		// no touch, just quit
+		return currentSelection;
+	}
+
+	// get the y coordinate of where the display was touched
+	// remember the x-coordinate of touch is really our y-coordinate
+	// on the display
+	int touchY = map(touch.x, TS_MINX, TS_MAXX, 0, TFT_HEIGHT - 1);
+
+	// need to invert the x-axis, so reverse the
+	// range of the display coordinates
+	int touchX = map(touch.y, TS_MINY, TS_MAXY, TFT_WIDTH - 1, 0);
+
+	//if user tapped somewhere in the right column
+	if (touchX>DISP_WIDTH){
+
+			if(touchY>0 && touchY<48){
+			//first button (5star only)
+			currentSelection=5;
+		}
+		else if(touchY>48 && touchY<48*2){
+			//2nd button (4* and 5*)
+			currentSelection=4;
+		}
+		else if(touchY>48*2 && touchY<48*3){
+			//3rd button (3* 4* and 5*)
+			currentSelection=3;
+		}
+		else if(touchY>48*3 && touchY<48*4){
+			//2nd button (2* 3* 4* and 5*)
+			currentSelection=2;
+		}
+		else if(touchY>48*4 && touchY<48*5){
+			//2nd button (1* 2* 3* 4* and 5*)
+			currentSelection=1;
+		}
+
+		}
+	else{
+		//didn't touch within the column of interest, so do nothing
+		;
+	}
+
+//update display of which rating is selected
+	drawRating(currentSelection);
+	return currentSelection;
+}
+
+
+
+
+
 int main() {
 	setup();
+	int currentRating=1;
+	drawRating(currentRating);
 
-	// All the implementation work is done now, just have a loop that processes
-	// joystick movement!
 	while (true) {
 		if (mode == 0) {
-			scrollingMap();
+			currentRating=selectRating(currentRating);
+			//Serial.println(currentRating);
+			scrollingMap(currentRating);
 		}
 		else {
-			scrollingMenu();
+			scrollingMenu(currentRating);
 		}
 	}
 

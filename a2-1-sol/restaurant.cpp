@@ -24,18 +24,6 @@ void swap(RestDist& r1, RestDist& r2) {
 	r2 = tmp;
 }
 
-// // Selection sort to sort the restaurants.
-// void ssort(RestDist restaurants[]) {
-// 	for (int i = NUM_RESTAURANTS-1; i >= 1; --i) {
-// 		int maxId = 0;
-// 		for (int j = 1; j <= i; ++j)
-// 			if (restaurants[j].dist > restaurants[maxId].dist) {
-// 				maxId = j;
-// 			}
-// 		swap(restaurants[i], restaurants[maxId]);
-// 	}
-//}
-
 /* Given an array of length n > 0 and an index 0 <= pi < n, this rearranges
    the array so all items <= a[pi] appear before a[pi] and all items > a[pi]
 	 appear after a[pi].

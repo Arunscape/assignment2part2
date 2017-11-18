@@ -44,6 +44,7 @@ Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 
 // the currently selected restaurant, if we are in mode 1
 int selectedRest;
+int topRest;
 
 // which mode are we in?
 int mode;
@@ -147,7 +148,7 @@ void printRestaurant(int i) {
 	restaurant r;
 
 	// get the i'th restaurant
-	getRestaurant(&r, restaurants[i].index, &card, &cache);
+	getRestaurant(&r, restaurants[i+topRest].index, &card, &cache);
 
 	// Set its colour based on whether or not it is the selected restaurant.
 	if (i != selectedRest) {
@@ -171,6 +172,7 @@ void beginMode1() {
 
 	// Initially have the closest restaurant highlighted.
 	selectedRest = 0;
+	topRest = 0;
 
 	// Print the list of restaurants.
 	for (int i = 0; i < REST_DISP_NUM; ++i) {
@@ -273,6 +275,43 @@ void scrollingMap() {
   }
 }
 
+//displays 30 rest names starting from topRest
+void displayAllNames(int topRest) {
+	tft.fillScreen(ILI9341_BLACK);
+  tft.setCursor(0, 0); // where the characters will be displayed
+  tft.setTextWrap(false);
+  for (int i = topRest; i < REST_DISP_NUM + topRest; i++) {
+    restaurant r;
+		getRestaurant(&r, restaurants[i].index, &card, &cache);
+    tft.setTextColor(0xFFFF, 0x0000); // white characters on black background
+    tft.print(r.name);
+    tft.print("\n");
+  }
+  tft.print("\n");
+}
+
+void checkMenuScroll() {
+	//int numRests = sizeof(restaurants)/sizeof(keys[0]).
+	//scroll down
+	if (selectedRest == REST_DISP_NUM) {
+		selectedRest=0;
+		topRest += REST_DISP_NUM;
+		displayAllNames(topRest);
+	}
+	// scroll up
+	else if (selectedRest == -1 && topRest !=0 ) {
+		selectedRest = REST_DISP_NUM-1;
+		topRest -= REST_DISP_NUM;
+		displayAllNames(topRest);
+	}
+	// very top of list
+	else if (selectedRest == -1 && topRest == 0) {
+		selectedRest = 0;
+	}
+	//very bottom of list
+	//else if (select)
+}
+
 // Process joystick movement when in mode 1.
 void scrollingMenu() {
 	int oldRest = selectedRest;
@@ -286,20 +325,25 @@ void scrollingMenu() {
 	else if (v < JOY_CENTRE - JOY_DEADZONE) {
 		--selectedRest;
 	}
-	selectedRest = constrain(selectedRest, 0, REST_DISP_NUM -1);
+
+	selectedRest = constrain(selectedRest, -1, REST_DISP_NUM); //up to max
 
 	// If we picked a new restaurant, update the way it and the previously
 	// selected restaurant are displayed.
+
+	checkMenuScroll();
+
 	if (oldRest != selectedRest) {
 		printRestaurant(oldRest);
 		printRestaurant(selectedRest);
 		delay(50); // so we don't scroll too fast
 	}
 
+
 	// If we clicked on a restaurant.
 	if (digitalRead(JOY_SEL) == LOW) {
 		restaurant r;
-		getRestaurant(&r, restaurants[selectedRest].index, &card, &cache);
+		getRestaurant(&r, restaurants[selectedRest+topRest].index, &card, &cache);
 		// Calculate the new map view.
 
 		// Center the map view at the restaurant, constraining against the edge of

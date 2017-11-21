@@ -1,5 +1,4 @@
 #include "restaurant.h"
-//int currentRating;
 
 /*
 	Sets *ptr to the i'th restaurant. If this restaurant is already in the cache,
@@ -82,12 +81,11 @@ int16_t manhattan(int16_t x1, int16_t y1, int16_t x2, int16_t y2) {
 	in restaurants[], and then sorts them based on their distance to the
 	point on the map represented by the MapView.
 */
-void getAndSortRestaurants(const MapView& mv, RestDist restaurants[], Sd2Card* card, RestCache* cache,int currentRating) {
+void getAndSortRestaurants(const MapView& mv, RestDist restaurants[], Sd2Card* card, RestCache* cache) {
 	restaurant r;
 
 	// Serial.print("Current rating: ");
 	// Serial.println(currentRating);
-	int counter=0;
 
 	// first get all the restaurants and store their corresponding RestDist information.
 	//and only choose restaurants with appropriate rating
@@ -108,7 +106,7 @@ void getAndSortRestaurants(const MapView& mv, RestDist restaurants[], Sd2Card* c
 																	}
 
 	}
-	restaurants_that_match_rating=counter
+	restaurants_that_match_rating=counter;
 	// Now sort them.
 	qsort(restaurants,NUM_RESTAURANTS);
 }

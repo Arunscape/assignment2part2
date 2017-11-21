@@ -216,7 +216,7 @@ void beginMode1(int currentRating) {
 	tft.fillScreen(ILI9341_BLACK);
 
 	// Get the RestDist information for this cursor position and sort it.
-	getAndSortRestaurants(curView, restaurants, &card, &cache,currentRating);
+	getAndSortRestaurants(curView, restaurants, &card, &cache);
 
 	// Initially have the closest restaurant highlighted.
 	selectedRest = 0;
@@ -270,7 +270,7 @@ void checkRedrawMap() {
 }
 
 // Process joystick input when in mode 0.
-void scrollingMap(int currentRating) {
+void scrollingMap() {
   int v = analogRead(JOY_VERT_ANALOG);
   int h = analogRead(JOY_HORIZ_ANALOG);
   int invSelect = digitalRead(JOY_SEL);
@@ -358,7 +358,7 @@ void checkMenuScroll() {
 		selectedRest = 0;
 	}
 	//very bottom of list
-	
+
 }
 
 // Process joystick movement when in mode 1.
@@ -536,7 +536,7 @@ void selectRating(){
 
 	if (touch.z < MINPRESSURE || touch.z > MAXPRESSURE) {
 		// no touch, just quit
-		return currentRating;
+		return;
 	}
 
 	// get the y coordinate of where the display was touched

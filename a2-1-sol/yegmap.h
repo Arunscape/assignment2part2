@@ -9,6 +9,8 @@
 #include <Adafruit_ILI9341.h>
 #include "lcd_image.h"
 
+
+
 struct MapView {
 	int16_t cursorX, cursorY; // cursor pixel position
 	int16_t mapX, mapY;       // upper-left pixel of the .lcd to display

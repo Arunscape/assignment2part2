@@ -1,4 +1,5 @@
 #include "restaurant.h"
+//int currentRating;
 
 /*
 	Sets *ptr to the i'th restaurant. If this restaurant is already in the cache,
@@ -48,15 +49,21 @@ int16_t manhattan(int16_t x1, int16_t y1, int16_t x2, int16_t y2) {
 */
 void getAndSortRestaurants(const MapView& mv, RestDist restaurants[], Sd2Card* card, RestCache* cache) {
 	restaurant r;
-
+	// Serial.print("Current rating: ");
+	// Serial.println(currentRating);
+	int counter=0;
 	// first get all the restaurants and store their corresponding RestDist information.
 	for (int i = 0; i < NUM_RESTAURANTS; ++i) {
 		getRestaurant(&r, i, card, cache);
-		restaurants[i].index = i;
-		restaurants[i].dist = manhattan(lat_to_y(r.lat), lon_to_x(r.lon),
-																		mv.mapY + mv.cursorY, mv.mapX + mv.cursorX);
-	}
 
+		if(currentRating<= max((int)floor((r.rating+1)/2), 1)){
+		restaurants[counter].index = i;
+		restaurants[counter].dist = manhattan(lat_to_y(r.lat), lon_to_x(r.lon),
+																		mv.mapY + mv.cursorY, mv.mapX + mv.cursorX);
+																		counter++;
+																	}
+	}
+	restaurants_that_match_rating=counter
 	// Now sort them.
 	ssort(restaurants);
 }

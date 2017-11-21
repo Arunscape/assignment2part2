@@ -8,6 +8,9 @@
 #include "yegmap.h"
 #include "restaurant.h"
 
+int currentRating;
+int restaurants_that_match_rating;
+
 #include <TouchScreen.h>
 
 // TFT display and SD card will share the hardware SPI interface.
@@ -107,7 +110,7 @@ RestCache cache;
 // it seems natural to forward declare both (not really that important).
 void beginMode0();
 void beginMode1();
-void drawRating(int currentRating);
+void drawRating();
 
 void setup() {
 	init();
@@ -316,7 +319,7 @@ void scrollingMap() {
 }
 
 // Process joystick movement when in mode 1.
-void scrollingMenu(int currentRating) {
+void scrollingMenu() {
 	int oldRest = selectedRest;
 
 	int v = analogRead(JOY_VERT_ANALOG);
@@ -360,12 +363,12 @@ void scrollingMenu(int currentRating) {
 		// Ensures a long click of the joystick will not register twice.
 		while (digitalRead(JOY_SEL) == LOW) { delay(10); }
 
-		drawRating(currentRating);
+		drawRating();
 
 	}
 }
 
-void drawRating(int currentRating){
+void drawRating(){
 	tft.setTextColor(0);
 	tft.setTextSize(4);
 	switch (currentRating){
@@ -482,13 +485,13 @@ void drawRating(int currentRating){
 	}
 }
 
-int selectRating(int currentSelection){
+void selectRating(){
 	//check for touch
 	TSPoint touch = ts.getPoint();
 
 	if (touch.z < MINPRESSURE || touch.z > MAXPRESSURE) {
 		// no touch, just quit
-		return currentSelection;
+		return currentRating;
 	}
 
 	// get the y coordinate of where the display was touched
@@ -505,33 +508,33 @@ int selectRating(int currentSelection){
 
 			if(touchY>0 && touchY<48){
 			//first button (5star only)
-			currentSelection=5;
+			currentRating=5;
 		}
 		else if(touchY>48 && touchY<48*2){
 			//2nd button (4* and 5*)
-			currentSelection=4;
+			currentRating=4;
 		}
 		else if(touchY>48*2 && touchY<48*3){
 			//3rd button (3* 4* and 5*)
-			currentSelection=3;
+			currentRating=3;
 		}
 		else if(touchY>48*3 && touchY<48*4){
 			//2nd button (2* 3* 4* and 5*)
-			currentSelection=2;
+			currentRating=2;
 		}
 		else if(touchY>48*4 && touchY<48*5){
 			//2nd button (1* 2* 3* 4* and 5*)
-			currentSelection=1;
+			currentRating=1;
 		}
 
 		}
 	else{
 		//didn't touch within the column of interest, so do nothing
-		return currentSelection;
+		;
 	}
 
 //update display of which rating is selected
-	drawRating(currentSelection);
+	drawRating();
 }
 
 
@@ -540,16 +543,16 @@ int selectRating(int currentSelection){
 
 int main() {
 	setup();
-	int currentRating=1;
-	drawRating(currentRating);
+	currentRating=1;
+	drawRating();
 
 	while (true) {
 		if (mode == 0) {
 			scrollingMap();
-			currentRating=selectRating(currentRating);
+			selectRating();
 		}
 		else {
-			scrollingMenu(currentRating);
+			scrollingMenu();
 		}
 	}
 

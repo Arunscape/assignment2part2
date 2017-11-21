@@ -87,6 +87,7 @@ Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 
 // the currently selected restaurant, if we are in mode 1
 int selectedRest;
+int topRest;
 
 // which mode are we in?
 int mode;
@@ -191,8 +192,11 @@ void printRestaurant(int i) {
 	restaurant r;
 
 	// get the i'th restaurant
-	getRestaurant(&r, restaurants[i].index, &card, &cache);
+
+	//getRestaurant(&r, restaurants[i].index, &card, &cache);
 	tft.setTextSize(1);
+	getRestaurant(&r, restaurants[i+topRest].index, &card, &cache);
+
 
 	// Set its colour based on whether or not it is the selected restaurant.
 	if (i != selectedRest) {
@@ -207,15 +211,16 @@ void printRestaurant(int i) {
 
 // Begin mode 1 by sorting the restaurants around the cursor
 // and then displaying the list.
-void beginMode1() {
+void beginMode1(int currentRating) {
 	tft.setCursor(0, 0);
 	tft.fillScreen(ILI9341_BLACK);
 
 	// Get the RestDist information for this cursor position and sort it.
-	getAndSortRestaurants(curView, restaurants, &card, &cache);
+	getAndSortRestaurants(curView, restaurants, &card, &cache,currentRating);
 
 	// Initially have the closest restaurant highlighted.
 	selectedRest = 0;
+	topRest = 0;
 
 	// Print the list of restaurants.
 	for (int i = 0; i < REST_DISP_NUM; ++i) {
@@ -265,7 +270,7 @@ void checkRedrawMap() {
 }
 
 // Process joystick input when in mode 0.
-void scrollingMap() {
+void scrollingMap(int currentRating) {
   int v = analogRead(JOY_VERT_ANALOG);
   int h = analogRead(JOY_HORIZ_ANALOG);
   int invSelect = digitalRead(JOY_SEL);
@@ -307,7 +312,7 @@ void scrollingMap() {
 
 	// Did we click the button?
   if(invSelect == LOW){
-		beginMode1();
+		beginMode1(currentRating);
     mode = 1;
     Serial.println(mode);
     Serial.println("MODE changed.");
@@ -316,6 +321,44 @@ void scrollingMap() {
 		// because the button was pressed too long.
 		while (digitalRead(JOY_SEL) == LOW) { delay(10); }
   }
+}
+
+//displays 30 restaurant names starting from topRest
+void displayAllNames(int topRest) {
+	tft.fillScreen(ILI9341_BLACK);
+  tft.setCursor(0, 0); // where the characters will be displayed
+  tft.setTextWrap(false);
+  for (int i = topRest; i < REST_DISP_NUM + topRest; i++) {
+    restaurant r;
+		getRestaurant(&r, restaurants[i].index, &card, &cache);
+    tft.setTextColor(0xFFFF, 0x0000); // white characters on black background
+    tft.print(r.name);
+    tft.print("\n");
+  }
+  tft.print("\n");
+}
+
+
+// display another screen of restaurants when the edge is bumped
+void checkMenuScroll() {
+	//scroll down
+	if (selectedRest == REST_DISP_NUM) {
+		selectedRest=0;
+		topRest += REST_DISP_NUM;
+		displayAllNames(topRest);
+	}
+	// scroll up
+	else if (selectedRest == -1 && topRest !=0 ) {
+		selectedRest = REST_DISP_NUM-1;
+		topRest -= REST_DISP_NUM;
+		displayAllNames(topRest);
+	}
+	// very top of list
+	else if (selectedRest == -1 && topRest == 0) {
+		selectedRest = 0;
+	}
+	//very bottom of list
+	
 }
 
 // Process joystick movement when in mode 1.
@@ -331,20 +374,22 @@ void scrollingMenu() {
 	else if (v < JOY_CENTRE - JOY_DEADZONE) {
 		--selectedRest;
 	}
-	selectedRest = constrain(selectedRest, 0, REST_DISP_NUM -1);
 
-	// If we picked a new restaurant, update the way it and the previously
-	// selected restaurant are displayed.
+	selectedRest = constrain(selectedRest, -1, REST_DISP_NUM);
+
+	checkMenuScroll();
+
 	if (oldRest != selectedRest) {
 		printRestaurant(oldRest);
 		printRestaurant(selectedRest);
 		delay(50); // so we don't scroll too fast
 	}
 
+
 	// If we clicked on a restaurant.
 	if (digitalRead(JOY_SEL) == LOW) {
 		restaurant r;
-		getRestaurant(&r, restaurants[selectedRest].index, &card, &cache);
+		getRestaurant(&r, restaurants[selectedRest+topRest].index, &card, &cache);
 		// Calculate the new map view.
 
 		// Center the map view at the restaurant, constraining against the edge of
@@ -534,7 +579,9 @@ void selectRating(){
 	}
 
 //update display of which rating is selected
+
 	drawRating();
+
 }
 
 
@@ -548,8 +595,10 @@ int main() {
 
 	while (true) {
 		if (mode == 0) {
+
 			scrollingMap();
 			selectRating();
+
 		}
 		else {
 			scrollingMenu();

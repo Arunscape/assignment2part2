@@ -36,6 +36,8 @@ int totalRests;
 #define DISP_HEIGHT TFT_HEIGHT
 
 //NOTE new code here
+//these define positions for the 5 buttons that
+//allow the user to select a rating
 #define RATEBUTTONRADIUS 20
 #define RATEBUTTONX TFT_WIDTH- RATING_SIZE/2
 #define RATEBUTTON5Y RATEBUTTONRADIUS+6
@@ -451,9 +453,14 @@ void scrollingMenu() {
 	}
 }
 
+//function that updates the rating buttons
+
 void drawRating(){
+	//set text size and colour because it has been changed in the menu mode
+
 	tft.setTextColor(0);
 	tft.setTextSize(4);
+	
 	switch (currentRating){
 
 		case 5:

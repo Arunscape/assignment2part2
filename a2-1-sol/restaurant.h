@@ -16,8 +16,12 @@
 #define REST_START_BLOCK 4000000
 #define NUM_RESTAURANTS  1066
 
+//global variables needed across multiple files.
+//is included by the .cpp files where they are needed, i.e.
+//the main.cpp and restaurant.cpp
+
 extern int currentRating;
-extern int totalRests;
+extern int totalRests; //keeps track of number of restaurants that match rating
 
 // The same restaurant struct we discussed in class.
 struct restaurant {

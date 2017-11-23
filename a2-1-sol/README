@@ -9,9 +9,9 @@ of an assignment that allows a user to browse a map of Edmonton using a joystick
 and a dislay on an Arduino, and find restaurants nearby where the user clicks
 the joystick. In this implementation, the user can select a rating from 1 to 5
 and this allows the user to filter out restaurants that have a lower rating.
-Additionally, the user can now scroll to a second screen of restaurants in the
-restaurant selection menu, so now the user can choose from up to 60 restaurants,
-instead of just 30 like before.
+Additionally, the user can now scroll multiple screens in the
+restaurant selection menu, so now the user can choose from all of the restaurants
+that match the rating criteria the user selects
 
 Accessories:
 --------------------------------------------------------------------------------
@@ -69,10 +69,11 @@ ________________
 
 Now, you can use the joystick to move the red cursor on the screen. Choose the
 desired minimum restaurant rating by touching the right side of the display, and
-click the joystick to open a menu that will show the top 60 restaurants near the
-location where you clicked. Select a restaurant with the joystick to be shown
-where on the map the restaurant is. The cursor will be hovering over the
-restaurant you selected.
+click the joystick to open a menu that will show all of the restaurants that
+match the rating criteria (sorted by distance from where you clicked the
+joystick on the map). Select a restaurant with the joystick to be shown where
+on the map the restaurant is. The cursor will be hovering over the restaurant
+you selected.
 
 Note: to select the rating you want, you touch the right side of the display,
 the selected restaurant ratings will be highlighted in yellow, while the ignored

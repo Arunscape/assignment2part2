@@ -74,6 +74,13 @@ location where you clicked. Select a restaurant with the joystick to be shown
 where on the map the restaurant is. The cursor will be hovering over the
 restaurant you selected.
 
+Note: to select the rating you want, you touch the right side of the display,
+the selected restaurant ratings will be highlighted in yellow, while the ignored
+ones will be unhighlighted (white).
+
+Example: if you touch button 5, only restaurants of rating 5 will be displayed
+when you click the joystick. If you touch button 3, restaurants of rating 3 or
+higher will be available for you to select.
 
 Acknowledgments:
 --------------------------------------------------------------------------------

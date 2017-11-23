@@ -9,7 +9,7 @@
 #include "restaurant.h"
 
 int currentRating;
-int restaurants_that_match_rating;
+int totalRests;
 
 #include <TouchScreen.h>
 
@@ -88,6 +88,8 @@ Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 // the currently selected restaurant, if we are in mode 1
 int selectedRest;
 int topRest;
+int leftoverRests;
+int topRestEndPage;
 
 // which mode are we in?
 int mode;
@@ -209,9 +211,38 @@ void printRestaurant(int i) {
 	tft.print(r.name);
 }
 
+//displays 30 restaurant names starting from topRest
+void displayAllNames(int topRest) {
+	tft.fillScreen(ILI9341_BLACK);
+  tft.setCursor(0, 0); // where the characters will be displayed
+  tft.setTextWrap(false);
+  for (int i = topRest; i < REST_DISP_NUM + topRest; i++) {
+    restaurant r;
+		getRestaurant(&r, restaurants[i].index, &card, &cache);
+    tft.setTextColor(0xFFFF, 0x0000); // white characters on black background
+    tft.print(r.name);
+    tft.print("\n");
+  }
+  tft.print("\n");
+}
+
+void displayEndPage(int topRest) {
+	tft.fillScreen(ILI9341_BLACK);
+  tft.setCursor(0, 0); // where the characters will be displayed
+  tft.setTextWrap(false);
+  for (int i = topRest; i < leftoverRests + topRest; i++) {
+    restaurant r;
+		getRestaurant(&r, restaurants[i].index, &card, &cache);
+    tft.setTextColor(0xFFFF, 0x0000); // white characters on black background
+    tft.print(r.name);
+    tft.print("\n");
+  }
+  tft.print("\n");
+}
+
 // Begin mode 1 by sorting the restaurants around the cursor
 // and then displaying the list.
-void beginMode1(int currentRating) {
+void beginMode1() {
 	tft.setCursor(0, 0);
 	tft.fillScreen(ILI9341_BLACK);
 
@@ -221,11 +252,20 @@ void beginMode1(int currentRating) {
 	// Initially have the closest restaurant highlighted.
 	selectedRest = 0;
 	topRest = 0;
+	leftoverRests = totalRests%30;
+	topRestEndPage = totalRests-leftoverRests;
+	//topRest = topRestEndPage;
 
-	// Print the list of restaurants.
-	for (int i = 0; i < REST_DISP_NUM; ++i) {
-		printRestaurant(i);
+	tft.setTextSize(1);
+	if (topRestEndPage == topRest) {
+		displayEndPage(topRest);
+	} else {
+		// Print the list of restaurants.
+		for (int i = 0; i < REST_DISP_NUM; ++i) {
+			printRestaurant(i);
+		}
 	}
+
 
 	mode = 1;
 }
@@ -312,7 +352,7 @@ void scrollingMap() {
 
 	// Did we click the button?
   if(invSelect == LOW){
-		beginMode1(currentRating);
+		beginMode1();
     mode = 1;
     Serial.println(mode);
     Serial.println("MODE changed.");
@@ -323,29 +363,18 @@ void scrollingMap() {
   }
 }
 
-//displays 30 restaurant names starting from topRest
-void displayAllNames(int topRest) {
-	tft.fillScreen(ILI9341_BLACK);
-  tft.setCursor(0, 0); // where the characters will be displayed
-  tft.setTextWrap(false);
-  for (int i = topRest; i < REST_DISP_NUM + topRest; i++) {
-    restaurant r;
-		getRestaurant(&r, restaurants[i].index, &card, &cache);
-    tft.setTextColor(0xFFFF, 0x0000); // white characters on black background
-    tft.print(r.name);
-    tft.print("\n");
-  }
-  tft.print("\n");
-}
-
-
 // display another screen of restaurants when the edge is bumped
 void checkMenuScroll() {
 	//scroll down
 	if (selectedRest == REST_DISP_NUM) {
 		selectedRest=0;
 		topRest += REST_DISP_NUM;
-		displayAllNames(topRest);
+		if (topRestEndPage == topRest) {
+			displayEndPage(topRest);
+		} else {
+			displayAllNames(topRest);
+		}
+
 	}
 	// scroll up
 	else if (selectedRest == -1 && topRest !=0 ) {
@@ -578,7 +607,7 @@ void selectRating(){
 		;
 	}
 
-//update display of which rating is selected
+	//update display of which rating is selected
 
 	drawRating();
 

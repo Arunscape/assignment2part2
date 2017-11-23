@@ -81,6 +81,10 @@ int16_t manhattan(int16_t x1, int16_t y1, int16_t x2, int16_t y2) {
 	in restaurants[], and then sorts them based on their distance to the
 	point on the map represented by the MapView.
 */
+
+void chopArray(RestDist restaurants[]) {
+
+}
 void getAndSortRestaurants(const MapView& mv, RestDist restaurants[], Sd2Card* card, RestCache* cache) {
 	restaurant r;
 
@@ -106,7 +110,8 @@ void getAndSortRestaurants(const MapView& mv, RestDist restaurants[], Sd2Card* c
 																	}
 
 	}
-	restaurants_that_match_rating=counter;
+
+	totalRests=counter;
 	// Now sort them.
-	qsort(restaurants,NUM_RESTAURANTS);
+	qsort(restaurants,totalRests);
 }

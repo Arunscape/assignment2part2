@@ -17,7 +17,7 @@
 #define NUM_RESTAURANTS  1066
 
 extern int currentRating;
-extern int restaurants_that_match_rating;
+extern int totalRests;
 
 // The same restaurant struct we discussed in class.
 struct restaurant {

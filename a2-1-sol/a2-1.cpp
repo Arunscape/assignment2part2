@@ -254,7 +254,7 @@ void beginMode1() {
 	topRest = 0;
 	leftoverRests = totalRests%30;
 	topRestEndPage = totalRests-leftoverRests;
-	topRest = topRestEndPage;
+	//topRest = topRestEndPage;
 
 	tft.setTextSize(1);
 	if (topRestEndPage == topRest) {
@@ -403,8 +403,6 @@ void scrollingMenu() {
 		--selectedRest;
 	}
 
-
-
 	// dont scroll past the very bottom of the list
 	if (topRestEndPage == topRest) {
 		selectedRest = constrain(selectedRest, -1, leftoverRests-1);
@@ -415,14 +413,16 @@ void scrollingMenu() {
 
 	checkMenuScroll();
 
-
+	// give oldRest the same the constraints on the last page of the menu
+	if (topRestEndPage == topRest) {
+		oldRest = constrain(oldRest, -1, leftoverRests-1);
+	}
 
 	if (oldRest != selectedRest) {
 		printRestaurant(oldRest);
 		printRestaurant(selectedRest);
 		delay(50); // so we don't scroll too fast
 	}
-
 
 	// If we clicked on a restaurant.
 	if (digitalRead(JOY_SEL) == LOW) {

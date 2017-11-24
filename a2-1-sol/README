@@ -4,14 +4,13 @@ Tamara Bojovic 1511502
 
 Restaurant Finder Part 2:
 --------------------------------------------------------------------------------
-This program is the final implementation
-of an assignment that allows a user to browse a map of Edmonton using a joystick
-and a dislay on an Arduino, and find restaurants nearby where the user clicks
-the joystick. In this implementation, the user can select a rating from 1 to 5
-and this allows the user to filter out restaurants that have a lower rating.
-Additionally, the user can now scroll multiple screens in the
-restaurant selection menu, so now the user can choose from all of the restaurants
-that match the rating criteria the user selects
+This program is the final implementation of an assignment that allows a user to
+browse a map of Edmonton using a joystick and a display on an Arduino, and find
+restaurants nearby where the user clicks the joystick. In this implementation,
+the user can select a rating from 1 to 5 and this allows the user to filter out
+restaurants that have a lower rating. Additionally, the user can now scroll
+multiple screens in the restaurant selection menu, so now the user can choose
+from all of the restaurants that match the rating criteria the user selects.
 
 Accessories:
 --------------------------------------------------------------------------------
@@ -21,9 +20,8 @@ Accessories:
 -1 x 8GB SD Card
 
 **SD card needs to be formatted in a very special way, however we cannot tell you how to
-  format it and put the files on it properly because that was done by the TAs and
-  we are not given access to the software.
-
+format it and put the files on it properly because that was done by the TAs and
+we are not given access to the software.
 
 Wiring Instructions:
 --------------------------------------------------------------------------------
@@ -66,7 +64,6 @@ ________________
 | $ make upload |
 |_______________|
 
-
 Now, you can use the joystick to move the red cursor on the screen. Choose the
 desired minimum restaurant rating by touching the right side of the display, and
 click the joystick to open a menu that will show all of the restaurants that
@@ -85,6 +82,9 @@ higher will be available for you to select.
 
 Acknowledgments:
 --------------------------------------------------------------------------------
-This code was based on the solution posted for part 1. We decided to use the
+This code was based on the solution posted for part 1 on eclass. We decided to use the
 solution from part 1 instead of our own solution, in case there were any errors,
 we didn't want them to propagate to this part of the assignment.
+
+The pivot and quicksort functions were developed from pseudo code that was
+posted to eclass.

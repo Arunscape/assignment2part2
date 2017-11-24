@@ -35,7 +35,6 @@ int totalRests;
 #define DISP_WIDTH (TFT_WIDTH - RATING_SIZE)
 #define DISP_HEIGHT TFT_HEIGHT
 
-//NOTE new code here
 //these define positions for the 5 buttons that
 //allow the user to select a rating
 #define RATEBUTTONRADIUS 20
@@ -45,7 +44,6 @@ int totalRests;
 #define RATEBUTTON3Y RATEBUTTON4Y+46
 #define RATEBUTTON2Y RATEBUTTON3Y+46
 #define RATEBUTTON1Y RATEBUTTON2Y+46
-
 
 //stuff required for touch functionality
 
@@ -87,7 +85,7 @@ TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 
 
-// the currently selected restaurant, if we are in mode 1
+// vars for displaying the menu and selecting from the menu
 int selectedRest;
 int topRest;
 int leftoverRests;
@@ -213,7 +211,7 @@ void printRestaurant(int i) {
 	tft.print(r.name);
 }
 
-//displays 30 restaurant names starting from topRest
+// displays 30 restaurant names starting from the restaurant at index 'topRest'
 void displayAllNames(int topRest) {
 	tft.fillScreen(ILI9341_BLACK);
   tft.setCursor(0, 0); // where the characters will be displayed
@@ -228,6 +226,8 @@ void displayAllNames(int topRest) {
   tft.print("\n");
 }
 
+// displays the last page of the restaurant menu, where it is very likely
+// that the restaurants will not fill the whole screen
 void displayEndPage(int topRest) {
 	tft.fillScreen(ILI9341_BLACK);
   tft.setCursor(0, 0); // where the characters will be displayed
@@ -256,7 +256,6 @@ void beginMode1() {
 	topRest = 0;
 	leftoverRests = totalRests%30;
 	topRestEndPage = totalRests-leftoverRests;
-	//topRest = topRestEndPage;
 
 	tft.setTextSize(1);
 	if (topRestEndPage == topRest) {
@@ -267,7 +266,6 @@ void beginMode1() {
 			printRestaurant(i);
 		}
 	}
-
 
 	mode = 1;
 }
@@ -376,7 +374,6 @@ void checkMenuScroll() {
 		} else {
 			displayAllNames(topRest);
 		}
-
 	}
 	// scroll up
 	else if (selectedRest == -1 && topRest !=0 ) {
@@ -453,14 +450,13 @@ void scrollingMenu() {
 	}
 }
 
-//function that updates the rating buttons
-
+// function that updates the rating buttons
 void drawRating(){
 	//set text size and colour because it has been changed in the menu mode
 
 	tft.setTextColor(0);
 	tft.setTextSize(4);
-	
+
 	switch (currentRating){
 
 		case 5:
@@ -575,6 +571,7 @@ void drawRating(){
 	}
 }
 
+// Allows the user to select a minimum rating from the touch screen
 void selectRating(){
 	//check for touch
 	TSPoint touch = ts.getPoint();

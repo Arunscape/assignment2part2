@@ -68,7 +68,6 @@ void qsort(RestDist restaurants[], int n) {
 	qsort(restaurants, new_pi);
 	// - once with the part after index new_pi
 	qsort(restaurants + new_pi + 1, n - 1 - new_pi);
-	// and that’s it!
 }
 
 // Computes the manhattan distance between two points (x1, y1) and (x2, y2).
@@ -81,15 +80,8 @@ int16_t manhattan(int16_t x1, int16_t y1, int16_t x2, int16_t y2) {
 	in restaurants[], and then sorts them based on their distance to the
 	point on the map represented by the MapView.
 */
-
-void chopArray(RestDist restaurants[]) {
-
-}
 void getAndSortRestaurants(const MapView& mv, RestDist restaurants[], Sd2Card* card, RestCache* cache) {
 	restaurant r;
-
-	// Serial.print("Current rating: ");
-	// Serial.println(currentRating);
 
 	// first get all the restaurants and store their corresponding RestDist information.
 	//and only choose restaurants with appropriate rating
